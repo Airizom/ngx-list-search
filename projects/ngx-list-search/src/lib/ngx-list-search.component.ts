@@ -1,20 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
-  selector: 'lib-ngx-list-search',
-  template: `
-    <p>
-      ngx-list-search works!
-    </p>
-  `,
-  styles: [
-  ]
+  selector: 'ngx-list-search',
+  templateUrl: './ngx-list-search.component.html',
+  styles: []
 })
-export class NgxListSearchComponent implements OnInit {
+export class NgxListSearchComponent {
 
   constructor() { }
 
-  ngOnInit(): void {
+  clearSearch() {
+    //
   }
 
 }
