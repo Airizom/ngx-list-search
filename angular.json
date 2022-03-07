@@ -20,7 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/ngx-list-search",
+            "outputPath": "dist/ngx-list-search-app",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -69,10 +69,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "ngx-list-search:build:production"
+              "browserTarget": "ngx-list-search-app:build:production"
             },
             "development": {
-              "browserTarget": "ngx-list-search:build:development"
+              "browserTarget": "ngx-list-search-app:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -80,7 +80,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ngx-list-search:build"
+            "browserTarget": "ngx-list-search-app:build"
           }
         },
         "test": {
@@ -135,5 +135,5 @@
       }
     }
   },
-  "defaultProject": "ngx-list-search"
+  "defaultProject": "ngx-list-search-app"
 }
