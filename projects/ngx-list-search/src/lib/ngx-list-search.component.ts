@@ -11,6 +11,7 @@ import { takeUntil } from 'rxjs/operators';
 export class NgxListSearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Input() formControl: FormControl = new FormControl();
+  @Input() public placeholder: string = 'Search...';
 
   public observer: MutationObserver | undefined;
 

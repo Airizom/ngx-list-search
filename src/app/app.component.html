@@ -9,7 +9,7 @@
     <mat-tab label="Mat List"
              class="tab">
       <mat-list>
-        <ngx-list-search></ngx-list-search>
+        <ngx-list-search [placeholder]="'Search states...'"></ngx-list-search>
         <mat-list-item *ngFor="let item of states">
           {{ item }}
         </mat-list-item>
