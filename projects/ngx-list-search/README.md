@@ -1,24 +1,35 @@
 # NgxListSearch
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.2.0.
+## About
+Angular list search drop in component to provide searching on MatList, MatActionList and MatSelectionList [MatList](https://material.angular.io/components/list/overview)
 
-## Code scaffolding
+## Usage
+Install `ngx-list-search` in your project:
+```
+npm install ngx-list-search
+```
 
-Run `ng generate component component-name --project ngx-list-search` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project ngx-list-search`.
-> Note: Don't forget to add `--project ngx-list-search` or else it will be added to the default project in your `angular.json` file. 
+Import `NgxListSearchModule` e.g. in your `app.module.ts`:
+```typescript
+import { MatListModule } from '@angular/material/list';
+import { NgxListSearchModule } from 'ngx-list-search';
 
-## Build
+@NgModule({
+  imports: [
+    ...
+    MatListModule,
+    NgxListSearchModule
+  ],
+})
+export class AppModule {}
+```
 
-Run `ng build ngx-list-search` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Publishing
-
-After building your library with `ng build ngx-list-search`, go to the dist folder `cd dist/ngx-list-search` and run `npm publish`.
-
-## Running unit tests
-
-Run `ng test ngx-list-search` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Use the `ngx-list-search` component inside a `mat-list` element:
+```html
+<mat-list>
+    <ngx-list-search></ngx-list-search>
+    <mat-list-item *ngFor="let item of items">
+        {{ item }}
+    </mat-list-item>
+</mat-list>
+```
