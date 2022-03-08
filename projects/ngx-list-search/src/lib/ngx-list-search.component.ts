@@ -7,7 +7,6 @@ import { filter, takeUntil, tap } from 'rxjs/operators';
 @Component({
   selector: 'ngx-list-search',
   templateUrl: './ngx-list-search.component.html',
-  styles: [],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
