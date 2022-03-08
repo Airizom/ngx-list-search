@@ -6,9 +6,9 @@
     <!-- Add search icon prefix -->
     <mat-icon matPrefix>search</mat-icon>
     <input matInput
-           [formControl]="formControl">
+           [formControl]="_formControl">
     <!-- Add clear suffix icon -->
-    <mat-icon *ngIf="formControl.value"
+    <mat-icon *ngIf="_formControl.value"
               [ngStyle]="{'cursor': 'pointer'}"
               matSuffix
               (click)="clearSearch()">close</mat-icon>

@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -19,7 +20,8 @@ import { AppComponent } from './app.component';
     BrowserAnimationsModule,
     MatListModule,
     MatToolbarModule,
-    MatTabsModule
+    MatTabsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

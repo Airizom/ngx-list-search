@@ -1,25 +1,39 @@
-import { AfterViewInit, Component, ElementRef, Host, Input, OnDestroy, OnInit, Optional, Renderer2 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, forwardRef, Host, Input, OnDestroy, OnInit, Optional, Renderer2 } from '@angular/core';
+import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatList, MatSelectionList } from '@angular/material/list';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { filter, takeUntil, tap } from 'rxjs/operators';
+
 @Component({
   selector: 'ngx-list-search',
   templateUrl: './ngx-list-search.component.html',
-  styles: []
+  styles: [],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => NgxListSearchComponent),
+      multi: true
+    }
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NgxListSearchComponent implements OnInit, AfterViewInit, OnDestroy {
+export class NgxListSearchComponent implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor {
 
-  @Input() formControl: FormControl = new FormControl();
+  _formControl: FormControl = new FormControl('');
   @Input() public placeholder: string = 'Search...';
 
   public observer: MutationObserver | undefined;
 
   public destroy$: Subject<void> = new Subject();
 
+  private _lastExternalInputValue: string | undefined;
+
+  onTouched: Function = (_: any) => { };
+
   constructor(
     private readonly elementRef: ElementRef<HTMLElement>,
     private readonly renderer: Renderer2,
+    private readonly changeDetectorRef: ChangeDetectorRef,
     @Host() @Optional() private readonly matList: MatList,
     @Host() @Optional() private readonly matSelectionList: MatSelectionList
   ) {
@@ -35,7 +49,7 @@ export class NgxListSearchComponent implements OnInit, AfterViewInit, OnDestroy 
   public ngAfterViewInit(): void {
     if (this.matList instanceof MatList) {
       this.observableChangesToMatListItems();
-      this.formControl?.valueChanges.pipe(
+      this._formControl?.valueChanges.pipe(
         takeUntil(this.destroy$)
       ).subscribe(() => {
         if (this.matList instanceof MatList) {
@@ -71,7 +85,7 @@ export class NgxListSearchComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   public clearSearch() {
-    this.formControl.setValue('');
+    this._formControl.setValue('');
   }
 
   /**
@@ -88,7 +102,7 @@ export class NgxListSearchComponent implements OnInit, AfterViewInit, OnDestroy 
       return;
     }
     // Get the value of the input.
-    const value = this.formControl.value || '';
+    const value = this._formControl.value || '';
     this.observer?.disconnect();
     items.forEach(item => {
       const text = item.innerText;
@@ -97,4 +111,31 @@ export class NgxListSearchComponent implements OnInit, AfterViewInit, OnDestroy 
     });
     this.observableChangesToMatListItems();
   }
+
+  writeValue(value: string) {
+    this._lastExternalInputValue = value;
+    this._formControl.setValue(value);
+    this.changeDetectorRef.markForCheck();
+  }
+
+  onBlur() {
+    this.onTouched();
+  }
+
+  registerOnChange(fn: (value: string) => void) {
+    this._formControl.valueChanges.pipe(
+      filter(value => value !== this._lastExternalInputValue),
+      tap(() => this._lastExternalInputValue = undefined),
+      takeUntil(this.destroy$)
+    ).subscribe(fn);
+  }
+
+  registerOnTouched(fn: Function) {
+    this.onTouched = fn;
+  }
+
+  setDisabledState?(isDisabled: boolean): void {
+    this._formControl.disable();
+  }
+
 }
