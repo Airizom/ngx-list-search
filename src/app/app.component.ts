@@ -65,7 +65,7 @@ export class AppComponent implements OnInit {
     setTimeout(() => {
       // Add a new item to the list.
       this.states.push('A new state');
-    }, 3000);
+    }, 10000);
   }
 
 }

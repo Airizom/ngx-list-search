@@ -6,6 +6,7 @@
     <!-- Add search icon prefix -->
     <mat-icon matPrefix>search</mat-icon>
     <input matInput
+           (keydown)="$event.stopPropagation()"
            [formControl]="_formControl">
     <!-- Add clear suffix icon -->
     <mat-icon *ngIf="_formControl.value"

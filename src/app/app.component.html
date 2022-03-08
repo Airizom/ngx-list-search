@@ -6,8 +6,15 @@
      role="main">
 
   <mat-tab-group>
-    <mat-tab label="Mat List"
-             class="tab">
+    <mat-tab label="Mat Selection List">
+      <mat-selection-list>
+        <ngx-list-search></ngx-list-search>
+        <mat-list-option *ngFor="let item of states">
+          {{ item }}
+        </mat-list-option>
+      </mat-selection-list>
+    </mat-tab>
+    <mat-tab label="Mat List">
       <mat-list>
         <ngx-list-search [placeholder]="'Search states...'"
                          [formControl]="formControl"></ngx-list-search>
@@ -16,17 +23,13 @@
         </mat-list-item>
       </mat-list>
     </mat-tab>
-    <mat-tab label="Mat Action List"
-             class="tab">
+    <mat-tab label="Mat Action List">
       <mat-action-list>
         <ngx-list-search></ngx-list-search>
         <mat-list-item *ngFor="let item of states">
           {{ item }}
         </mat-list-item>
       </mat-action-list>
-    </mat-tab>
-    <mat-tab label="Mat Selection List"
-             class="tab">
     </mat-tab>
   </mat-tab-group>
 

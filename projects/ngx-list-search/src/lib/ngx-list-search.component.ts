@@ -1,7 +1,7 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, forwardRef, Host, Input, OnDestroy, OnInit, Optional, Renderer2 } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, forwardRef, Host, Input, OnDestroy, Optional, Renderer2 } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatList, MatSelectionList } from '@angular/material/list';
-import { Subject } from 'rxjs';
+import { merge, Subject } from 'rxjs';
 import { filter, takeUntil, tap } from 'rxjs/operators';
 
 @Component({
@@ -17,7 +17,7 @@ import { filter, takeUntil, tap } from 'rxjs/operators';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NgxListSearchComponent implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor {
+export class NgxListSearchComponent implements AfterViewInit, OnDestroy, ControlValueAccessor {
 
   _formControl: FormControl = new FormControl('');
 
@@ -51,16 +51,45 @@ export class NgxListSearchComponent implements OnInit, AfterViewInit, OnDestroy,
   }
 
   public ngAfterViewInit(): void {
+    this._formControl?.valueChanges.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      if (this.matList instanceof MatList) {
+        this.searchMatList();
+      }
+      if (this.matSelectionList instanceof MatSelectionList) {
+        this.searchMatSelectionListOptions();
+      }
+    });
     if (this.matList instanceof MatList) {
-      this.observableChangesToMatListItems();
-      this._formControl?.valueChanges.pipe(
+      this.observeChangesToMatListItems();
+    }
+    if (this.matSelectionList instanceof MatSelectionList) {
+      merge(
+        this.matSelectionList.selectionChange,
+        this.matSelectionList.options.changes
+      ).pipe(
         takeUntil(this.destroy$)
       ).subscribe(() => {
-        if (this.matList instanceof MatList) {
-          this.searchMatList();
-        }
+        this.searchMatSelectionListOptions();
+        this.changeDetectorRef.markForCheck();
       });
     }
+  }
+
+  private searchMatSelectionListOptions() {
+    this.resultsFound = false;
+    const options = this.matSelectionList.options.toArray();
+    // Iterate over all the options and if the text contains the value, show the item, otherwise hide it.
+    options.forEach(option => {
+      const text = option.getLabel()?.toLowerCase() || '';
+      const value = this._formControl?.value?.toLowerCase() || '';
+      const shouldShow = text.includes(value);
+      if (shouldShow) {
+        this.resultsFound = true;
+      }
+      this.renderer.setStyle(option._getHostElement(), 'display', shouldShow ? 'inherit' : 'none');
+    });
   }
 
   /**
@@ -69,7 +98,7 @@ export class NgxListSearchComponent implements OnInit, AfterViewInit, OnDestroy,
    * @private
    * @memberof NgxListSearchComponent
    */
-  private observableChangesToMatListItems() {
+  private observeChangesToMatListItems() {
     if (!this.elementRef.nativeElement.parentElement) {
       return;
     }
@@ -82,10 +111,6 @@ export class NgxListSearchComponent implements OnInit, AfterViewInit, OnDestroy,
       characterData: false,
       subtree: true
     });
-  }
-
-  public ngOnInit(): void {
-    //
   }
 
   public clearSearch() {
@@ -118,7 +143,8 @@ export class NgxListSearchComponent implements OnInit, AfterViewInit, OnDestroy,
       // If the text contains the value, show the item, otherwise hide it.
       this.renderer.setStyle(item, 'display', shouldShow ? 'inherit' : 'none');
     });
-    this.observableChangesToMatListItems();
+    this.changeDetectorRef.detectChanges();
+    this.observeChangesToMatListItems();
   }
 
   writeValue(value: string) {
