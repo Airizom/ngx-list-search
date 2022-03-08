@@ -1,7 +1,8 @@
-import { AfterViewInit, Component, ElementRef, Host, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Host, Input, OnDestroy, OnInit, Optional, Renderer2 } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatList } from '@angular/material/list';
-
+import { MatList, MatSelectionList } from '@angular/material/list';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 @Component({
   selector: 'ngx-list-search',
   templateUrl: './ngx-list-search.component.html',
@@ -12,23 +13,31 @@ export class NgxListSearchComponent implements OnInit, AfterViewInit, OnDestroy 
   @Input() formControl: FormControl = new FormControl();
 
   public observer: MutationObserver | undefined;
+
+  public destroy$: Subject<void> = new Subject();
+
   constructor(
     private readonly elementRef: ElementRef<HTMLElement>,
     private readonly renderer: Renderer2,
-    @Host() private readonly host: MatList
+    @Host() @Optional() private readonly matList: MatList,
+    @Host() @Optional() private readonly matSelectionList: MatSelectionList
   ) {
     //
   }
 
   public ngOnDestroy(): void {
     this.observer?.disconnect();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   public ngAfterViewInit(): void {
-    if (this.host instanceof MatList) {
+    if (this.matList instanceof MatList) {
       this.observableChangesToMatListItems();
-      this.formControl?.valueChanges.subscribe(() => {
-        if (this.host instanceof MatList) {
+      this.formControl?.valueChanges.pipe(
+        takeUntil(this.destroy$)
+      ).subscribe(() => {
+        if (this.matList instanceof MatList) {
           this.searchMatList();
         }
       });
