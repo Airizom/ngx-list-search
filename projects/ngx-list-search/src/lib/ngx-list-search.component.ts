@@ -112,6 +112,12 @@ export class NgxListSearchComponent implements AfterViewInit, OnDestroy, Control
     });
   }
 
+  /**
+   * Event fired when the clear icon is selected.
+   * Clears the input.
+   *
+   * @memberof NgxListSearchComponent
+   */
   public clearSearch() {
     this._formControl.setValue('');
   }
@@ -146,17 +152,17 @@ export class NgxListSearchComponent implements AfterViewInit, OnDestroy, Control
     this.observeChangesToMatListItems();
   }
 
-  writeValue(value: string) {
+  public writeValue(value: string) {
     this._lastExternalInputValue = value;
     this._formControl.setValue(value);
     this.changeDetectorRef.markForCheck();
   }
 
-  onBlur() {
+  public onBlur() {
     this.onTouched();
   }
 
-  registerOnChange(fn: (value: string) => void) {
+  public registerOnChange(fn: (value: string) => void) {
     this._formControl.valueChanges.pipe(
       filter(value => value !== this._lastExternalInputValue),
       tap(() => this._lastExternalInputValue = undefined),
@@ -164,11 +170,11 @@ export class NgxListSearchComponent implements AfterViewInit, OnDestroy, Control
     ).subscribe(fn);
   }
 
-  registerOnTouched(fn: Function) {
+  public registerOnTouched(fn: Function) {
     this.onTouched = fn;
   }
 
-  setDisabledState?(isDisabled: boolean): void {
+  public setDisabledState?(isDisabled: boolean): void {
     this._formControl.disable();
   }
 

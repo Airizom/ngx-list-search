@@ -3,16 +3,19 @@
     <mat-label>
         {{ placeholder }}
     </mat-label>
-    <!-- Add search icon prefix -->
+
     <mat-icon matPrefix>search</mat-icon>
+
     <input matInput
            (keydown)="$event.stopPropagation()"
            [formControl]="_formControl">
-    <!-- Add clear suffix icon -->
+
     <mat-icon *ngIf="_formControl.value"
               [ngStyle]="{'cursor': 'pointer'}"
               matSuffix
-              (click)="clearSearch()">close</mat-icon>
+              (click)="clearSearch()">
+        close
+    </mat-icon>
 </mat-form-field>
 
 <p [ngStyle]="{'padding': '0 16px'}"
