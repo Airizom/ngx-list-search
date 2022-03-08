@@ -8,7 +8,6 @@ import { NgxListSearchModule } from 'projects/ngx-list-search/src/lib/ngx-list-s
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-
 @NgModule({
   declarations: [
     AppComponent

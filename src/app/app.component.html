@@ -6,7 +6,7 @@
      role="main">
 
   <mat-tab-group>
-    <mat-tab label="MatList"
+    <mat-tab label="Mat List"
              class="tab">
       <mat-list>
         <ngx-list-search></ngx-list-search>
@@ -15,11 +15,17 @@
         </mat-list-item>
       </mat-list>
     </mat-tab>
-    <mat-tab label="Second"
-             class="tab"> Content 2
+    <mat-tab label="Mat Action List"
+             class="tab">
+      <mat-action-list>
+        <ngx-list-search></ngx-list-search>
+        <mat-list-item *ngFor="let item of states">
+          {{ item }}
+        </mat-list-item>
+      </mat-action-list>
     </mat-tab>
-    <mat-tab label="Third"
-             class="tab"> Content 3
+    <mat-tab label="Mat Selection List"
+             class="tab">
     </mat-tab>
   </mat-tab-group>
 
