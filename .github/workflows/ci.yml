@@ -25,6 +25,8 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - run: npm ci
+      # Globally install @angular/cli
+      - run: npm install -g @angular/cli
       - run: ng build --project ngx-list-search-app
       - run: ng build --project ngx-list-search
       - run: ng test --project ngx-list-search
