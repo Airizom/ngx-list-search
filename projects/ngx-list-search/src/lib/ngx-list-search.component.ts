@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Host, Input, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Host, Input, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatList } from '@angular/material/list';
 
@@ -14,6 +14,7 @@ export class NgxListSearchComponent implements OnInit, AfterViewInit, OnDestroy 
   observer: MutationObserver | undefined;
   constructor(
     private readonly elementRef: ElementRef<HTMLElement>,
+    private readonly renderer: Renderer2,
     @Host() private readonly host: MatList
   ) {
     //
@@ -41,14 +42,18 @@ export class NgxListSearchComponent implements OnInit, AfterViewInit, OnDestroy 
    * @memberof NgxListSearchComponent
    */
   private observableChangesToMatListItems() {
-    this.observer = new MutationObserver(() => {
+    if (!this.elementRef.nativeElement.parentElement) {
+      return;
+    }
+    this.observer = new MutationObserver((mutations: MutationRecord[]) => {
+      console.log('MutationObserver detected a change in the MatList.', mutations);
       this.searchMatList();
     });
-    this.observer.observe(this.elementRef.nativeElement, {
+    this.observer.observe(this.elementRef.nativeElement.parentElement, {
       attributes: false,
       childList: true,
       characterData: false,
-      subtree: false
+      subtree: true
     });
   }
 
@@ -74,9 +79,12 @@ export class NgxListSearchComponent implements OnInit, AfterViewInit, OnDestroy 
     }
     // Get the value of the input.
     const value = this.formControl.value || '';
+    this.observer?.disconnect();
     items.forEach(item => {
       const text = item.innerText;
-      item.style.display = text.toLowerCase().indexOf(value.toLowerCase()) === -1 ? 'none' : 'inherit';
+      // If the text contains the value, show the item, otherwise hide it.
+      this.renderer.setStyle(item, 'display', text.toLowerCase().includes(value.toLowerCase()) ? 'inherit' : 'none');
     });
+    this.observableChangesToMatListItems();
   }
 }
