@@ -1,5 +1,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, forwardRef, Host, Input, OnDestroy, Optional, Renderer2 } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { MatList, MatSelectionList } from '@angular/material/list';
 import { merge, Subject } from 'rxjs';
 import { filter, takeUntil, tap } from 'rxjs/operators';
@@ -22,6 +23,7 @@ export class NgxListSearchComponent implements AfterViewInit, OnDestroy, Control
 
   @Input() public placeholder: string = 'Search...';
   @Input() public notFoundMessage: string = 'No results found';
+  @Input() public appearance: MatFormFieldAppearance = 'fill';
 
   public observer: MutationObserver | undefined;
 
