@@ -10,7 +10,8 @@
            (keydown)="$event.stopPropagation()"
            [formControl]="_formControl">
 
-    <mat-icon *ngIf="_formControl.value"
+    <mat-icon class="ngx-list-search-clear-icon"
+              *ngIf="_formControl.value"
               [ngStyle]="{'cursor': 'pointer'}"
               matSuffix
               (click)="clearSearch()">
@@ -18,7 +19,8 @@
     </mat-icon>
 </mat-form-field>
 
-<p [ngStyle]="{'padding': '0 16px'}"
+<p class="ngx-list-search-no-results"
+   [ngStyle]="{'padding': '0 16px'}"
    *ngIf="notFoundMessage && !resultsFound">
     {{ notFoundMessage }}
 </p>
