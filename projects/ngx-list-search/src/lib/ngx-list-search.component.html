@@ -1,0 +1,26 @@
+<mat-form-field [appearance]="appearance"
+                [ngStyle]="{'min-width': '250px'}">
+    <mat-label>
+        {{ placeholder }}
+    </mat-label>
+
+    <mat-icon matPrefix>search</mat-icon>
+
+    <input matInput
+           (keydown)="$event.stopPropagation()"
+           [formControl]="_formControl">
+
+    <mat-icon class="ngx-list-search-clear-icon"
+              *ngIf="_formControl.value"
+              [ngStyle]="{'cursor': 'pointer'}"
+              matSuffix
+              (click)="clearSearch()">
+        close
+    </mat-icon>
+</mat-form-field>
+
+<p class="ngx-list-search-no-results"
+   [ngStyle]="{'padding': '0 16px'}"
+   *ngIf="notFoundMessage && !resultsFound">
+    {{ notFoundMessage }}
+</p>
