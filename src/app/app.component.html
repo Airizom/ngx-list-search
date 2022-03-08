@@ -10,7 +10,12 @@
 <div class="content"
      role="main">
 
-  <ngx-list-search></ngx-list-search>
+  <mat-list>
+    <ngx-list-search></ngx-list-search>
+    <mat-list-item *ngFor="let item of states">
+      {{ item }}
+    </mat-list-item>
+  </mat-list>
 
 </div>
 <router-outlet></router-outlet>

@@ -1,9 +1,13 @@
-<mat-form-field appearance="fill">
+<mat-form-field appearance="fill"
+                [ngStyle]="{'min-width': '250px'}">
     <mat-label>Search...</mat-label>
     <!-- Add search icon prefix -->
     <mat-icon matPrefix>search</mat-icon>
-    <input matInput>
+    <input matInput
+           [formControl]="formControl">
     <!-- Add clear suffix icon -->
-    <mat-icon matSuffix
+    <mat-icon *ngIf="formControl.value"
+              [ngStyle]="{'cursor': 'pointer'}"
+              matSuffix
               (click)="clearSearch()">close</mat-icon>
 </mat-form-field>
