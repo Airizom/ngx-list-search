@@ -11,7 +11,7 @@ export class NgxListSearchComponent implements OnInit, AfterViewInit, OnDestroy 
 
   @Input() formControl: FormControl = new FormControl();
 
-  observer: MutationObserver | undefined;
+  public observer: MutationObserver | undefined;
   constructor(
     private readonly elementRef: ElementRef<HTMLElement>,
     private readonly renderer: Renderer2,
@@ -46,7 +46,6 @@ export class NgxListSearchComponent implements OnInit, AfterViewInit, OnDestroy 
       return;
     }
     this.observer = new MutationObserver((mutations: MutationRecord[]) => {
-      console.log('MutationObserver detected a change in the MatList.', mutations);
       this.searchMatList();
     });
     this.observer.observe(this.elementRef.nativeElement.parentElement, {
@@ -57,10 +56,11 @@ export class NgxListSearchComponent implements OnInit, AfterViewInit, OnDestroy 
     });
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
+    //
   }
 
-  clearSearch() {
+  public clearSearch() {
     this.formControl.setValue('');
   }
 
