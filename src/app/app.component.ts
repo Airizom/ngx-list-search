@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   public states: string[] = [
     'Alabama',
     'Alaska',
@@ -58,4 +58,12 @@ export class AppComponent {
     'Wisconsin',
     'Wyoming'
   ];
+
+  ngOnInit(): void {
+    setTimeout(() => {
+      // Add a new item to the list.
+      this.states.push('A new state');
+    }, 3000);
+  }
+
 }
