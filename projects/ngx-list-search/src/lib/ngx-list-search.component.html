@@ -13,3 +13,8 @@
               matSuffix
               (click)="clearSearch()">close</mat-icon>
 </mat-form-field>
+
+<p [ngStyle]="{'padding': '0 16px'}"
+   *ngIf="notFoundMessage && !resultsFound">
+    {{ notFoundMessage }}
+</p>

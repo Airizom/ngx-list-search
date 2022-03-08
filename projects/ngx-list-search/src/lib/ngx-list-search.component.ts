@@ -20,11 +20,15 @@ import { filter, takeUntil, tap } from 'rxjs/operators';
 export class NgxListSearchComponent implements OnInit, AfterViewInit, OnDestroy, ControlValueAccessor {
 
   _formControl: FormControl = new FormControl('');
+
   @Input() public placeholder: string = 'Search...';
+  @Input() public notFoundMessage: string = 'No results found';
 
   public observer: MutationObserver | undefined;
 
   public destroy$: Subject<void> = new Subject();
+
+  public resultsFound: boolean = true;
 
   private _lastExternalInputValue: string | undefined;
 
@@ -95,6 +99,7 @@ export class NgxListSearchComponent implements OnInit, AfterViewInit, OnDestroy,
    * @memberof NgxListSearchComponent
    */
   public searchMatList() {
+    this.resultsFound = false;
     // Get a reference to all the mat-list-items in the parent mat-list.
     const items: NodeListOf<HTMLElement> | undefined = this.elementRef.nativeElement.parentElement?.querySelectorAll('mat-list-item');
     // If there are no items, return.
@@ -106,8 +111,12 @@ export class NgxListSearchComponent implements OnInit, AfterViewInit, OnDestroy,
     this.observer?.disconnect();
     items.forEach(item => {
       const text = item.innerText;
+      const shouldShow = text.toLowerCase().includes(value.toLowerCase());
+      if (shouldShow) {
+        this.resultsFound = true;
+      }
       // If the text contains the value, show the item, otherwise hide it.
-      this.renderer.setStyle(item, 'display', text.toLowerCase().includes(value.toLowerCase()) ? 'inherit' : 'none');
+      this.renderer.setStyle(item, 'display', shouldShow ? 'inherit' : 'none');
     });
     this.observableChangesToMatListItems();
   }
