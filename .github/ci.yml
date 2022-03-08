@@ -1,0 +1,30 @@
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the main branch
+on:
+  pull_request:
+    branches: [main]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    steps:
+      - uses: actions/checkout@v2
+      - uses: del-systems/check-if-version-bumped@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: npm ci
+      - run: ng build --project ngx-list-search-app
+      - run: ng build --project ngx-list-search
+      - run: ng test --project ngx-list-search
