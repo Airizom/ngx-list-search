@@ -1,5 +1,17 @@
 :host {
+  height: 100%;
+
   .content {
-    padding: 2rem;
+    height: calc(100% - 64px);
+    overflow: hidden;
+
+    ::ng-deep .mat-tab-body-content {
+      height: calc(100% - 32px);
+      padding: 16px;
+    }
+
+    ::ng-deep .mat-tab-group {
+      height: 100%;
+    }
   }
 }

@@ -1,21 +1,27 @@
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * The content below * * * * * * * * * * * -->
-<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * -->
-<!-- * * * * * * * * * * and can be replaced. * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * Delete the template below * * * * * * * * * * -->
-<!-- * * * * * * * to get started with your project! * * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<mat-toolbar>
+  <span>NgxListSearch</span>
+</mat-toolbar>
 
 <div class="content"
      role="main">
 
-  <mat-list>
-    <ngx-list-search></ngx-list-search>
-    <mat-list-item *ngFor="let item of states">
-      {{ item }}
-    </mat-list-item>
-  </mat-list>
+  <mat-tab-group>
+    <mat-tab label="MatList"
+             class="tab">
+      <mat-list>
+        <ngx-list-search></ngx-list-search>
+        <mat-list-item *ngFor="let item of states">
+          {{ item }}
+        </mat-list-item>
+      </mat-list>
+    </mat-tab>
+    <mat-tab label="Second"
+             class="tab"> Content 2
+    </mat-tab>
+    <mat-tab label="Third"
+             class="tab"> Content 3
+    </mat-tab>
+  </mat-tab-group>
 
 </div>
 <router-outlet></router-outlet>
