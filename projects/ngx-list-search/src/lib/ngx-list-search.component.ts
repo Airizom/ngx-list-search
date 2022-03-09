@@ -33,7 +33,9 @@ export class NgxListSearchComponent implements AfterViewInit, OnDestroy, Control
 
   private _lastExternalInputValue: string | undefined;
 
-  onTouched: Function = (_: any) => { };
+  onTouched: Function = () => {
+    this._formControl.markAsTouched();
+  };
 
   constructor(
     private readonly elementRef: ElementRef<HTMLElement>,
@@ -52,7 +54,7 @@ export class NgxListSearchComponent implements AfterViewInit, OnDestroy, Control
   }
 
   public ngAfterViewInit(): void {
-    this._formControl?.valueChanges.pipe(
+    this._formControl.valueChanges.pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
       if (this.matList instanceof MatList) {
@@ -83,8 +85,8 @@ export class NgxListSearchComponent implements AfterViewInit, OnDestroy, Control
     const options = this.matSelectionList.options.toArray();
     // Iterate over all the options and if the text contains the value, show the item, otherwise hide it.
     options.forEach(option => {
-      const text = option.getLabel()?.toLowerCase() || '';
-      const value = this._formControl?.value?.toLowerCase() || '';
+      const text = option.getLabel().toLowerCase();
+      const value = this._formControl.value.toLowerCase();
       const shouldShow = text.includes(value);
       if (shouldShow) {
         this.resultsFound = true;
@@ -157,11 +159,8 @@ export class NgxListSearchComponent implements AfterViewInit, OnDestroy, Control
   public writeValue(value: string) {
     this._lastExternalInputValue = value;
     this._formControl.setValue(value);
-    this.changeDetectorRef.markForCheck();
-  }
-
-  public onBlur() {
     this.onTouched();
+    this.changeDetectorRef.markForCheck();
   }
 
   public registerOnChange(fn: (value: string) => void) {
@@ -177,7 +176,7 @@ export class NgxListSearchComponent implements AfterViewInit, OnDestroy, Control
   }
 
   public setDisabledState?(isDisabled: boolean): void {
-    this._formControl.disable();
+    isDisabled ? this._formControl.disable() : this._formControl.enable();
   }
 
 }
