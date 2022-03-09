@@ -12,9 +12,8 @@ jobs:
       - run: npm install -g @angular/cli
       # Build the project
       - run: ng build --project ngx-list-search
-      # cd to the dist folder
-      - run: cd dist/ngx-list-search
       # Publish the project
-      - uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
+      - run: npm install -g @jsdevtools/npm-publish
+      - name: Publish to npm
+        working-directory: ./dist/ngx-list-search
+        run: npm-publish --token={{secrets.NPM_TOKEN}}
