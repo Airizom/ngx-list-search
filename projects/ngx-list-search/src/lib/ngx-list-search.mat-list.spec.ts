@@ -1,4 +1,4 @@
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatListItem, MatListModule } from '@angular/material/list';
 import { By } from '@angular/platform-browser';
 import { createHostFactory, SpectatorHost } from '@ngneat/spectator';
@@ -18,19 +18,22 @@ describe('NgxListSearchComponent', () => {
       ReactiveFormsModule
     ]
   });
-  let states: IState[];
+  let states: IState[] | undefined;
+  let formControl: FormControl;
   beforeEach(() => {
     states = State.getStatesOfCountry('US');
+    formControl = new FormControl();
     spectator = createHost(`
       <mat-list>
-        <ngx-list-search [placeholder]="'Search states...'"></ngx-list-search>
+        <ngx-list-search [placeholder]="'Search states...'" [formControl]="formControl"></ngx-list-search>
         <mat-list-item *ngFor="let item of states">
           {{ item.name }}
         </mat-list-item>
       </mat-list>
     `, {
       hostProps: {
-        states
+        states,
+        formControl
       }
     });
   });
@@ -103,8 +106,8 @@ describe('NgxListSearchComponent', () => {
     expect(items.filter(item => item.nativeElement.style.display !== 'none').length).toBe(1);
 
     // Find the texas item in the states array and then remove it
-    const texasItem = states.find(item => item.name === 'Texas');
-    if (texasItem) {
+    const texasItem = states?.find(item => item.name === 'Texas');
+    if (texasItem && states) {
       states.splice(states.indexOf(texasItem), 1);
     }
     spectator.detectChanges();
@@ -113,6 +116,36 @@ describe('NgxListSearchComponent', () => {
 
     // Expect the list of items to that are shown to be zero
     expect(newItems.filter(item => item.nativeElement.style.display !== 'none').length).toBe(0);
+  });
+
+  it('should set the formControl to disabled', () => {
+    // Disable the formControl
+    formControl.disable();
+    spectator.detectChanges();
+    // Expect the input to be disabled
+    expect(spectator.query<HTMLInputElement>('input')?.disabled).toBe(true);
+  });
+
+  it('should set the formControl to enabled', () => {
+    // Disable the formControl
+    formControl.disable();
+    spectator.detectChanges();
+    // Enable the formControl
+    formControl.enable();
+    spectator.detectChanges();
+    // Expect the input to be enabled
+    expect(spectator.query<HTMLInputElement>('input')?.disabled).toBe(false);
+  });
+
+  it('should not show the results not found message if not items are in the list', () => {
+    states = undefined;
+    spectator.detectChanges();
+    // Type in the input
+    spectator.typeInElement('texas', 'input');
+    // Clear the input
+    spectator.click('.ngx-list-search-clear-icon');
+    // Expect the no result message to be hidden
+    expect(spectator.query<HTMLElement>('.ngx-list-search-no-results')?.style.display).toBeUndefined();
   });
 
 });

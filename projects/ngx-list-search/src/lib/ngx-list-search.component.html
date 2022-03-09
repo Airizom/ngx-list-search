@@ -7,6 +7,7 @@
     <mat-icon matPrefix>search</mat-icon>
 
     <input matInput
+           (blur)="onTouched()"
            (keydown)="$event.stopPropagation()"
            [formControl]="_formControl">
 
