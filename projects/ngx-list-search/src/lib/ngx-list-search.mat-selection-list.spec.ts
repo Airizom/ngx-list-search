@@ -1,5 +1,5 @@
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatListItem, MatListModule } from '@angular/material/list';
+import { MatListModule, MatListOption } from '@angular/material/list';
 import { By } from '@angular/platform-browser';
 import { createHostFactory, SpectatorHost } from '@ngneat/spectator';
 import { State } from 'country-state-city';
@@ -50,7 +50,7 @@ describe('NgxListSearchComponent', () => {
         // Type in the input
         spectator.typeInElement('texas', 'input');
         // Get a list of mat-list-item components
-        const items = spectator.fixture.debugElement.queryAll(By.directive(MatListItem));
+        const items = spectator.fixture.debugElement.queryAll(By.directive(MatListOption));
         // Expect the list of items to have one item that is not hidden
         expect(items.filter(item => item.nativeElement.style.display !== 'none').length).toBe(1);
     });
@@ -70,7 +70,7 @@ describe('NgxListSearchComponent', () => {
         // Type in the input
         spectator.typeInElement('texas', 'input');
         // Get a list of mat-list-item components
-        const items = spectator.fixture.debugElement.queryAll(By.directive(MatListItem));
+        const items = spectator.fixture.debugElement.queryAll(By.directive(MatListOption));
         // Expect the list of items to have one item that is not hidden
         expect(items.filter(item => item.nativeElement.style.display !== 'none').length).toBe(1);
 
@@ -98,7 +98,7 @@ describe('NgxListSearchComponent', () => {
         // Type in the input
         spectator.typeInElement('texas', 'input');
         // Get a list of mat-list-item components
-        const items = spectator.fixture.debugElement.queryAll(By.directive(MatListItem));
+        const items = spectator.fixture.debugElement.queryAll(By.directive(MatListOption));
         // Expect the list of items to have one item that is not hidden
         expect(items.filter(item => item.nativeElement.style.display !== 'none').length).toBe(1);
 
@@ -109,7 +109,7 @@ describe('NgxListSearchComponent', () => {
         }
         spectator.detectChanges();
 
-        const newItems = spectator.fixture.debugElement.queryAll(By.directive(MatListItem));
+        const newItems = spectator.fixture.debugElement.queryAll(By.directive(MatListOption));
 
         // Expect the list of items to that are shown to be zero
         expect(newItems.filter(item => item.nativeElement.style.display !== 'none').length).toBe(0);
