@@ -23,7 +23,9 @@ jobs:
       # Globally install @angular/cli
       - run: npm install -g @angular/cli
       - run: ng test --project ngx-list-search --browsers ChromeHeadless --watch=false --code-coverage
+
+      - name: Coveralls
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: ../../coverage/ngx-list-search/lcov.info
+          path-to-lcov: ./coverage/ngx-list-search/lcov.info
