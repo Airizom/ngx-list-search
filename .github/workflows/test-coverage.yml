@@ -22,7 +22,7 @@ jobs:
       - run: npm ci
       # Globally install @angular/cli
       - run: npm install -g @angular/cli
-      - run: ng test --project ngx-list-search --code-coverage --watch=false
+      - run: ng test --project ngx-list-search --browsers ChromeHeadless --watch=false --code-coverage
 
       - name: Coveralls
         uses: coverallsapp/github-action@master
