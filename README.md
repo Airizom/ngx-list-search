@@ -1,5 +1,6 @@
 # NgxListSearch
 
+[![Main](https://github.com/Airizom/ngx-list-search/actions/workflows/main.yml/badge.svg)](https://github.com/Airizom/ngx-list-search/actions/workflows/main.yml)
 ## About
 Angular list search drop in component to provide searching on MatList, MatActionList and MatSelectionList [MatList](https://material.angular.io/components/list/overview)
 
