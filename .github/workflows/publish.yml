@@ -1,0 +1,25 @@
+name: publish
+on:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: get-npm-version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+          registry-url: "https://registry.npmjs.org"
+      - run: npm ci
+      # Install @angular/cli
+      - run: npm install -g @angular/cli
+      # Build the project
+      - run: ng build --project npx-list-search
+      # Publish the project
+      - run: npm publish --tag ${{ steps.package-version.outputs.current-version}}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

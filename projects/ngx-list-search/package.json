@@ -1,11 +1,28 @@
 {
+  "$schema": "../../node_modules/ng-packagr/package.schema.json",
   "name": "ngx-list-search",
-  "version": "0.0.1",
-  "peerDependencies": {
-    "@angular/common": "^13.2.0",
-    "@angular/core": "^13.2.0"
+  "version": "1.0.0",
+  "license": "MIT",
+  "author": "Michael Isom",
+  "description": "Angular list search drop in component to provide searching on MatList, MatActionList and MatSelectionList",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Airizom/ngx-list-search.git"
   },
-  "dependencies": {
-    "tslib": "^2.3.0"
-  }
+  "ngPackage": {
+    "dest": "../../dist/ngx-list-search",
+    "lib": {
+      "entryFile": "src/public-api.ts"
+    }
+  },
+  "keywords": [
+    "angular",
+    "material",
+    "MatList",
+    "MatActionList",
+    "MatSelectionList",
+    "list",
+    "search"
+  ],
+  "homepage": "https://github.com/Airizom/ngx-list-search"
 }
