@@ -14,7 +14,9 @@ jobs:
       # Install @angular/cli
       - run: npm install -g @angular/cli
       # Build the project
-      - run: ng build --project npx-list-search
+      - run: ng build --project ngx-list-search
+      # cd to the dist folder
+      - run: cd dist/ngx-list-search
       # Publish the project
       - run: npm publish --tag ${{ steps.package-version.outputs.current-version}}
         env:
