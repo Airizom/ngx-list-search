@@ -35,3 +35,6 @@ Use the `ngx-list-search` component inside a `mat-list` element:
     </mat-list-item>
 </mat-list>
 ```
+
+## Demo
+To see a working demo, please visit [https://ngx-list-search.com/](https://ngx-list-search.com/)

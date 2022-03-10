@@ -13,5 +13,10 @@
     ::ng-deep .mat-tab-group {
       height: 100%;
     }
+
+    .mat-selection-list,
+    .mat-action-list {
+      width: 500px;
+    }
   }
 }
