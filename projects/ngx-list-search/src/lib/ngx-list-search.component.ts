@@ -150,7 +150,7 @@ export class NgxListSearchComponent implements AfterViewInit, OnDestroy, Control
   public searchMatList(): void {
     this.resultsFound = false;
     // Get a reference to all the mat-list-items in the parent mat-list.
-    const items: NodeListOf<HTMLElement> | undefined = this.elementRef.nativeElement.parentElement?.querySelectorAll('mat-list-item');
+    const items: NodeListOf<HTMLElement> | undefined = this.getMatListItems();
     // If there are no items, return.
     if (!items) {
       return;
@@ -169,6 +169,16 @@ export class NgxListSearchComponent implements AfterViewInit, OnDestroy, Control
     });
     this.changeDetectorRef.detectChanges();
     this.observeChangesToMatListItems();
+  }
+
+  /**
+   * Query the DOM for the Angular mat-list-item elements
+   *
+   * @returns {(NodeListOf<HTMLElement> | undefined)}
+   * @memberof NgxListSearchComponent
+   */
+  public getMatListItems(): NodeListOf<HTMLElement> | undefined {
+    return this.elementRef.nativeElement.parentElement?.querySelectorAll('mat-list-item');
   }
 
   public registerOnTouched(fn: any): void {

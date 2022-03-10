@@ -175,4 +175,17 @@ describe('NgxListSearchComponent', () => {
     expect(spectator.query<HTMLElement>('.ngx-list-search-no-results')?.style.display).toBeUndefined();
   });
 
+  it('should not call observeChangesToMatListItems when no items exist', () => {
+    // Stub out getMatListItems
+    spyOn(spectator.component, 'getMatListItems').and.returnValue(undefined);
+
+    // Spy on observeChangesToMatListItems
+    const spy = spyOn((spectator.component as any), 'observeChangesToMatListItems');
+    // Search for something
+    spectator.typeInElement('texas', 'input');
+
+    // Expect the observeChangesToMatListItems method to not have been called
+    expect(spy).not.toHaveBeenCalled();
+  });
+
 });
