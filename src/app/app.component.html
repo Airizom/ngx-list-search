@@ -9,7 +9,8 @@
     <mat-tab label="Mat Selection List">
       <mat-selection-list>
         <ngx-list-search></ngx-list-search>
-        <mat-list-option *ngFor="let item of states">
+        <mat-list-option checkboxPosition="before"
+                         *ngFor="let item of states">
           {{ item.name }}
         </mat-list-option>
       </mat-selection-list>
