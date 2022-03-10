@@ -38,3 +38,6 @@ Use the `ngx-list-search` component inside a `mat-list` element:
 
 ## Demo
 To see a working demo, please visit [https://ngx-list-search.com/](https://ngx-list-search.com/)
+
+## Limitations
+All searchable items must be in the DOM and not rendered with virtual scrolling.
