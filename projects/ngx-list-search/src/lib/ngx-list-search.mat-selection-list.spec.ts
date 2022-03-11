@@ -1,11 +1,14 @@
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { ControlContainer, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatListModule, MatListOption } from '@angular/material/list';
 import { By } from '@angular/platform-browser';
 import { createHostFactory, SpectatorHost } from '@ngneat/spectator';
 import { State } from 'country-state-city';
 import { IState } from 'country-state-city/dist/lib/interface';
 import { NgxListSearchComponent } from './ngx-list-search.component';
-import { NgxListSearchModule } from './ngx-list-search.module';
 
 describe('NgxListSearchComponent', () => {
     let spectator: SpectatorHost<NgxListSearchComponent>;
@@ -13,7 +16,10 @@ describe('NgxListSearchComponent', () => {
     const createHost = createHostFactory({
         component: NgxListSearchComponent,
         imports: [
-            NgxListSearchModule,
+            CommonModule,
+            MatIconModule,
+            MatInputModule,
+            MatFormFieldModule,
             MatListModule,
             ReactiveFormsModule
         ]
@@ -124,6 +130,14 @@ describe('NgxListSearchComponent', () => {
         expect(newItems.filter(item => item.nativeElement.style.display !== 'none').length).toBe(0);
     });
 
+    it('should not throw error when controlContainer.control is undefined', () => {
+        const controlContainer = spectator.inject(ControlContainer, true);
+        spyOnProperty(controlContainer, 'control', 'get').and.returnValue(undefined);
+        expect(spectator.component['controlContainer'].control).toBeUndefined();
+        expect(() => spectator.component.searchMatList()).not.toThrow();
+    });
+
+
 });
 
 describe('FormControlInitialValueTests', () => {
@@ -133,7 +147,10 @@ describe('FormControlInitialValueTests', () => {
     const createHost = createHostFactory({
         component: NgxListSearchComponent,
         imports: [
-            NgxListSearchModule,
+            CommonModule,
+            MatIconModule,
+            MatInputModule,
+            MatFormFieldModule,
             MatListModule,
             ReactiveFormsModule
         ]

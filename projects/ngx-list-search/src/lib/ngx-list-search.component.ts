@@ -25,7 +25,13 @@ export class NgxListSearchComponent implements AfterViewInit, OnDestroy, Control
   @Input() formControlName: string | undefined;
 
   public get control(): FormControl {
-    return this.formControlName ? this.controlContainer.control?.get(this.formControlName) as FormControl : this.formControl;
+    if (this.formControlName) {
+      const control: FormControl = this.controlContainer.control?.get(this.formControlName) as FormControl;
+      if (control) {
+        return control;
+      }
+    }
+    return this.formControl;
   }
 
   @Input() public placeholder: string = 'Search...';
