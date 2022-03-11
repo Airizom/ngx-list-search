@@ -1,4 +1,4 @@
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatListModule, MatListOption } from '@angular/material/list';
 import { By } from '@angular/platform-browser';
 import { createHostFactory, SpectatorHost } from '@ngneat/spectator';
@@ -19,20 +19,29 @@ describe('NgxListSearchComponent', () => {
         ]
     });
     let states: IState[];
+    let formControlName: string = 'search';
+    let formGroup: FormGroup;
     beforeEach(() => {
+        formGroup = new FormGroup({
+            [formControlName]: new FormControl()
+        });
         states = State.getStatesOfCountry('US');
         spectator = createHost(`
-      <mat-selection-list>
-        <ngx-list-search [placeholder]="'Search states...'"></ngx-list-search>
-        <mat-list-option *ngFor="let item of states">
-          {{ item.name }}
-        </mat-list-option>
-      </mat-selection-list>
-    `, {
-            hostProps: {
-                states
-            }
-        });
+            <form [formGroup]="formGroup">
+                <mat-selection-list>
+                    <ngx-list-search formControlName='search' [placeholder]="'Search states...'"></ngx-list-search>
+                    <mat-list-option *ngFor="let item of states">
+                    {{ item.name }}
+                    </mat-list-option>
+                </mat-selection-list>
+            </form>
+            `,
+            {
+                hostProps: {
+                    states,
+                    formGroup
+                }
+            });
     });
 
     it('should create', () => {
@@ -113,6 +122,52 @@ describe('NgxListSearchComponent', () => {
 
         // Expect the list of items to that are shown to be zero
         expect(newItems.filter(item => item.nativeElement.style.display !== 'none').length).toBe(0);
+    });
+
+});
+
+describe('FormControlInitialValueTests', () => {
+
+    let spectator: SpectatorHost<NgxListSearchComponent>;
+    // Create host component with NgxListSearchComponent and MatListModule
+    const createHost = createHostFactory({
+        component: NgxListSearchComponent,
+        imports: [
+            NgxListSearchModule,
+            MatListModule,
+            ReactiveFormsModule
+        ]
+    });
+    let states: IState[];
+    let formControlName: string = 'search';
+    let formGroup: FormGroup;
+    beforeEach(() => {
+        formGroup = new FormGroup({
+            [formControlName]: new FormControl('alabama')
+        });
+        states = State.getStatesOfCountry('US');
+        spectator = createHost(`
+            <form [formGroup]="formGroup">
+                <mat-selection-list>
+                    <ngx-list-search formControlName='search' [placeholder]="'Search states...'"></ngx-list-search>
+                    <mat-list-option *ngFor="let item of states">
+                    {{ item.name }}
+                    </mat-list-option>
+                </mat-selection-list>
+            </form>
+            `,
+            {
+                hostProps: {
+                    states,
+                    formGroup
+                }
+            });
+    });
+    it('should search the formControl when it has an initial value', () => {
+        // Get a list of mat-list-item components
+        const items = spectator.fixture.debugElement.queryAll(By.directive(MatListOption));
+        // Expect the list of items to have one item that is not hidden
+        expect(items.filter(item => item.nativeElement.style.display !== 'none').length).toBe(1);
     });
 
 });

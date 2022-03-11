@@ -1,9 +1,9 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, forwardRef, Host, Input, OnDestroy, Optional, Renderer2 } from '@angular/core';
-import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, forwardRef, Host, Input, OnDestroy, Optional, Renderer2, ViewChild } from '@angular/core';
+import { ControlContainer, ControlValueAccessor, FormControl, FormControlDirective, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { MatList, MatSelectionList } from '@angular/material/list';
 import { merge, Subject } from 'rxjs';
-import { filter, takeUntil, tap } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-list-search',
@@ -19,7 +19,14 @@ import { filter, takeUntil, tap } from 'rxjs/operators';
 })
 export class NgxListSearchComponent implements AfterViewInit, OnDestroy, ControlValueAccessor {
 
-  _formControl: FormControl = new FormControl('');
+  @ViewChild(FormControlDirective, { static: true }) formControlDirective!: FormControlDirective;
+
+  @Input() formControl: FormControl = new FormControl('');
+  @Input() formControlName: string | undefined;
+
+  public get control(): FormControl {
+    return this.formControlName ? this.controlContainer.control?.get(this.formControlName) as FormControl : this.formControl;
+  }
 
   @Input() public placeholder: string = 'Search...';
   @Input() public notFoundMessage: string = 'No results found';
@@ -31,18 +38,13 @@ export class NgxListSearchComponent implements AfterViewInit, OnDestroy, Control
 
   public resultsFound: boolean = true;
 
-  private _lastExternalInputValue: string | undefined;
-
-  onTouched: Function = () => {
-    this._formControl.markAsTouched();
-  };
-
   constructor(
     private readonly elementRef: ElementRef<HTMLElement>,
     private readonly renderer: Renderer2,
     private readonly changeDetectorRef: ChangeDetectorRef,
     @Host() @Optional() private readonly matList: MatList,
-    @Host() @Optional() private readonly matSelectionList: MatSelectionList
+    @Host() @Optional() private readonly matSelectionList: MatSelectionList,
+    @Optional() private readonly controlContainer: ControlContainer
   ) {
     //
   }
@@ -54,15 +56,13 @@ export class NgxListSearchComponent implements AfterViewInit, OnDestroy, Control
   }
 
   public ngAfterViewInit(): void {
-    this._formControl.valueChanges.pipe(
+    if (this.control.value) {
+      this.searchList();
+    }
+    this.control.valueChanges.pipe(
       takeUntil(this.destroy$)
     ).subscribe(() => {
-      if (this.matList instanceof MatList) {
-        this.searchMatList();
-      }
-      if (this.matSelectionList instanceof MatSelectionList) {
-        this.searchMatSelectionListOptions();
-      }
+      this.searchList();
     });
     if (this.matList instanceof MatList) {
       this.observeChangesToMatListItems();
@@ -80,13 +80,28 @@ export class NgxListSearchComponent implements AfterViewInit, OnDestroy, Control
     }
   }
 
-  private searchMatSelectionListOptions() {
+  /**
+   * Determine how the list will be searched based on list type
+   *
+   * @private
+   * @memberof NgxListSearchComponent
+   */
+  private searchList(): void {
+    if (this.matList instanceof MatList) {
+      this.searchMatList();
+    }
+    if (this.matSelectionList instanceof MatSelectionList) {
+      this.searchMatSelectionListOptions();
+    }
+  }
+
+  private searchMatSelectionListOptions(): void {
     this.resultsFound = false;
     const options = this.matSelectionList.options.toArray();
     // Iterate over all the options and if the text contains the value, show the item, otherwise hide it.
     options.forEach(option => {
       const text = option.getLabel().toLowerCase();
-      const value = this._formControl.value.toLowerCase();
+      const value = this.control.value.toLowerCase();
       const shouldShow = text.includes(value);
       if (shouldShow) {
         this.resultsFound = true;
@@ -101,7 +116,7 @@ export class NgxListSearchComponent implements AfterViewInit, OnDestroy, Control
    * @private
    * @memberof NgxListSearchComponent
    */
-  private observeChangesToMatListItems() {
+  private observeChangesToMatListItems(): void {
     if (!this.elementRef.nativeElement.parentElement) {
       return;
     }
@@ -122,8 +137,8 @@ export class NgxListSearchComponent implements AfterViewInit, OnDestroy, Control
    *
    * @memberof NgxListSearchComponent
    */
-  public clearSearch() {
-    this._formControl.setValue('');
+  public clearSearch(): void {
+    this.control.setValue('');
   }
 
   /**
@@ -132,16 +147,16 @@ export class NgxListSearchComponent implements AfterViewInit, OnDestroy, Control
    * @returns
    * @memberof NgxListSearchComponent
    */
-  public searchMatList() {
+  public searchMatList(): void {
     this.resultsFound = false;
     // Get a reference to all the mat-list-items in the parent mat-list.
-    const items: NodeListOf<HTMLElement> | undefined = this.elementRef.nativeElement.parentElement?.querySelectorAll('mat-list-item');
+    const items: NodeListOf<HTMLElement> | undefined = this.getMatListItems();
     // If there are no items, return.
     if (!items) {
       return;
     }
     // Get the value of the input.
-    const value = this._formControl.value || '';
+    const value = this.control.value || '';
     this.observer?.disconnect();
     items.forEach(item => {
       const text = item.innerText;
@@ -156,27 +171,30 @@ export class NgxListSearchComponent implements AfterViewInit, OnDestroy, Control
     this.observeChangesToMatListItems();
   }
 
-  public writeValue(value: string) {
-    this._lastExternalInputValue = value;
-    this._formControl.setValue(value);
-    this.onTouched();
-    this.changeDetectorRef.markForCheck();
+  /**
+   * Query the DOM for the Angular mat-list-item elements
+   *
+   * @returns {(NodeListOf<HTMLElement> | undefined)}
+   * @memberof NgxListSearchComponent
+   */
+  public getMatListItems(): NodeListOf<HTMLElement> | undefined {
+    return this.elementRef.nativeElement.parentElement?.querySelectorAll('mat-list-item');
   }
 
-  public registerOnChange(fn: (value: string) => void) {
-    this._formControl.valueChanges.pipe(
-      filter(value => value !== this._lastExternalInputValue),
-      tap(() => this._lastExternalInputValue = undefined),
-      takeUntil(this.destroy$)
-    ).subscribe(fn);
+  public registerOnTouched(fn: any): void {
+    this.formControlDirective.valueAccessor?.registerOnTouched(fn);
   }
 
-  public registerOnTouched(fn: Function) {
-    this.onTouched = fn;
+  public registerOnChange(fn: any): void {
+    this.formControlDirective.valueAccessor?.registerOnChange(fn);
   }
 
-  public setDisabledState?(isDisabled: boolean): void {
-    isDisabled ? this._formControl.disable() : this._formControl.enable();
+  public writeValue(obj: any): void {
+    this.formControlDirective.valueAccessor?.writeValue(obj);
+  }
+
+  public setDisabledState(isDisabled: boolean): void {
+    this.formControlDirective.valueAccessor?.setDisabledState?.(isDisabled);
   }
 
 }

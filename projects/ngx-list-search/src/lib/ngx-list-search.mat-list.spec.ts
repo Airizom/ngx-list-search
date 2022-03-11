@@ -137,6 +137,33 @@ describe('NgxListSearchComponent', () => {
     expect(spectator.query<HTMLInputElement>('input')?.disabled).toBe(false);
   });
 
+  it('should mark the formControl as touched when the control is blurred', () => {
+    // Expect the formControl to be untouched
+    expect(formControl.touched).toBe(false);
+    // Blur the input
+    spectator.blur('input');
+    // Expect the formControl to be touched
+    expect(formControl.touched).toBe(true);
+  });
+
+  it('should mark the formControl as not pristine when control value changes', () => {
+    // Expect the formControl to be pristine
+    expect(formControl.pristine).toBe(true);
+    // Type in the input
+    spectator.typeInElement('texas', 'input');
+    // Expect the formControl to be not pristine
+    expect(formControl.pristine).toBe(false);
+  });
+
+  it('should mark the formControl as not dirty when control value changes', () => {
+    // Expect the formControl to be dirty
+    expect(formControl.dirty).toBe(false);
+    // Type in the input
+    spectator.typeInElement('texas', 'input');
+    // Expect the formControl to be not dirty
+    expect(formControl.dirty).toBe(true);
+  });
+
   it('should not show the results not found message if not items are in the list', () => {
     states = undefined;
     spectator.detectChanges();
@@ -146,6 +173,19 @@ describe('NgxListSearchComponent', () => {
     spectator.click('.ngx-list-search-clear-icon');
     // Expect the no result message to be hidden
     expect(spectator.query<HTMLElement>('.ngx-list-search-no-results')?.style.display).toBeUndefined();
+  });
+
+  it('should not call observeChangesToMatListItems when no items exist', () => {
+    // Stub out getMatListItems
+    spyOn(spectator.component, 'getMatListItems').and.returnValue(undefined);
+
+    // Spy on observeChangesToMatListItems
+    const spy = spyOn((spectator.component as any), 'observeChangesToMatListItems');
+    // Search for something
+    spectator.typeInElement('texas', 'input');
+
+    // Expect the observeChangesToMatListItems method to not have been called
+    expect(spy).not.toHaveBeenCalled();
   });
 
 });

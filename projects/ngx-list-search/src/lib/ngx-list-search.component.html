@@ -7,12 +7,11 @@
     <mat-icon matPrefix>search</mat-icon>
 
     <input matInput
-           (blur)="onTouched()"
            (keydown)="$event.stopPropagation()"
-           [formControl]="_formControl">
+           [formControl]="control">
 
     <mat-icon class="ngx-list-search-clear-icon"
-              *ngIf="_formControl.value"
+              *ngIf="control.value"
               [ngStyle]="{'cursor': 'pointer'}"
               matSuffix
               (click)="clearSearch()">
