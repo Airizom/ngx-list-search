@@ -1,7 +1,7 @@
 # NgxListSearch
 
 [![Main](https://github.com/Airizom/ngx-list-search/actions/workflows/main.yml/badge.svg)](https://github.com/Airizom/ngx-list-search/actions/workflows/main.yml)
-[![Coverage Status](https://coveralls.io/repos/github/Airizom/ngx-list-search/badge.svg?branch=feature/TestCoverageBadgeAndPipeline)](https://coveralls.io/github/Airizom/ngx-list-search?branch=feature/TestCoverageBadgeAndPipeline)
+[![Coverage Status](https://coveralls.io/repos/github/Airizom/ngx-list-search/badge.svg?branch=main)](https://coveralls.io/github/Airizom/ngx-list-search?branch=main)
 [![npm version](https://badge.fury.io/js/ngx-list-search.svg)](https://badge.fury.io/js/ngx-list-search)
 ## About
 Angular list search drop in component to provide searching on MatList, MatActionList and MatSelectionList [MatList](https://material.angular.io/components/list/overview)

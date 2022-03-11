@@ -1,11 +1,15 @@
+import { CommonModule } from '@angular/common';
+import { ElementRef } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatListItem, MatListModule } from '@angular/material/list';
 import { By } from '@angular/platform-browser';
 import { createHostFactory, SpectatorHost } from '@ngneat/spectator';
 import { State } from 'country-state-city';
 import { IState } from 'country-state-city/dist/lib/interface';
 import { NgxListSearchComponent } from './ngx-list-search.component';
-import { NgxListSearchModule } from './ngx-list-search.module';
 
 describe('NgxListSearchComponent', () => {
   let spectator: SpectatorHost<NgxListSearchComponent>;
@@ -13,7 +17,10 @@ describe('NgxListSearchComponent', () => {
   const createHost = createHostFactory({
     component: NgxListSearchComponent,
     imports: [
-      NgxListSearchModule,
+      CommonModule,
+      MatIconModule,
+      MatInputModule,
+      MatFormFieldModule,
       MatListModule,
       ReactiveFormsModule
     ]
@@ -186,6 +193,38 @@ describe('NgxListSearchComponent', () => {
 
     // Expect the observeChangesToMatListItems method to not have been called
     expect(spy).not.toHaveBeenCalled();
+  });
+
+
+  it('should not throw error when parentElement if undefined', () => {
+    const elementRef = spectator.inject(ElementRef, true);
+    spyOnProperty(elementRef.nativeElement, 'parentElement', 'get').and.returnValue(undefined);
+    expect(spectator.component['elementRef'].nativeElement.parentElement).toBeUndefined();
+    // Stub out getMatListItems and return NodeListOf<HTMLElement>
+    spyOn(spectator.component, 'getMatListItems').and.returnValue(spectator.component['elementRef'].nativeElement.querySelectorAll('mat-list-item'));
+    expect(() => spectator.component.searchMatList()).not.toThrow();
+  });
+
+  it('should not throw error when parentElement if undefined', () => {
+    const elementRef = spectator.inject(ElementRef, true);
+    spyOnProperty(elementRef.nativeElement, 'parentElement', 'get').and.returnValue(undefined);
+    expect(spectator.component['elementRef'].nativeElement.parentElement).toBeUndefined();
+    expect(() => spectator.component.getMatListItems()).not.toThrow();
+  });
+
+  it('should not throw error observer is undefined', () => {
+    spectator.component.observer = undefined;
+    expect(() => spectator.component.searchMatList()).not.toThrow();
+  });
+
+  it('should not throw error when formControlDirective.valueAccessor is null and writing value of formControl', () => {
+    spectator.component.formControlDirective.valueAccessor = null;
+    expect(() => spectator.component.writeValue('')).not.toThrow();
+  });
+
+  it('should not throw error when formControlDirective.valueAccessor is null and disabling formControl', () => {
+    spectator.component.formControlDirective.valueAccessor = null;
+    expect(() => spectator.component.setDisabledState(true)).not.toThrow();
   });
 
 });
